@@ -8,15 +8,13 @@ use Illuminate\Validation\Rule;
 
 class TicketController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $topic = $request->query('topic');
-
-        $tickets = Ticket::when($topic, fn ($query) => $query->where('topic', $topic))
-            ->orderBy('created_at')
-            ->get();
-
-        return view('tickets.index', ['tickets' => $tickets, 'topics' => Ticket::TOPICS]);
+        return view('tickets.index', [
+            'helping' => Ticket::helping()->get(),
+            'waiting' => Ticket::waiting()->get(),
+            'doneCount' => Ticket::where('status', 'done')->count(),
+        ]);
     }
 
     public function create()
